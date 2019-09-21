@@ -12,6 +12,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 
 public class MainActivity extends AppCompatActivity {
     static class Item {
@@ -38,6 +46,33 @@ public class MainActivity extends AppCompatActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+               OkHttpClient client = new OkHttpClient();
+
+                try {
+                    run(client);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+              /*  OkHttpClient client = new OkHttpClient();
+
+                Request request = new Request.Builder()
+                        .url("http://192.168.0.109:8081/registration")
+                        .build();
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override public void onFailure(Request request, Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override public void onResponse(Response response) throws IOException {
+                        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+                        System.out.println(response.body().string());
+                    }
+                });
+*/
+
                 adapter.add(new Item(name.getText().toString(), Integer.valueOf(price.getText().toString())));
             }
         });
@@ -58,4 +93,28 @@ public class MainActivity extends AppCompatActivity {
             return view;
         }
     }
+
+
+    public void run(OkHttpClient client) throws Exception {
+        Request request = new Request.Builder()
+                .url("http://192.168.0.109:8081/registration")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                System.out.println(123);
+                if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+                System.out.println(response.body().string());
+            }
+
+
+        });
+    }
+
 }
